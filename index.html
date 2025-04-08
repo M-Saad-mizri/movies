@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Search</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <h1>🎬 Movie Search</h1>
+    <ul>
+      <li><a href="favorites.html" id="nav-fav">🤍 Favorites</a></li>
+      <li><a href="popular.html" id="nav-popular">📈 Most Popular</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <form id="searchForm" style="display: flex;">
+      <input type="text" id="searchInput" placeholder="Search for a movie" />
+      <input type="number" id="countInput" placeholder="Number of results: 5"/>
+      <button type="submit">Search</button>
+    </form>
+    <div id="loader" style="display: none;">Loading...</div>
+    <div id="movieList" class="grid"></div>
+  </div>
+
+  <footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Movie Search. All rights reserved.</p>
+    <p>Made with ❤️ for movie lovers</p>
+  </div>
+</footer>
+
+
+<script>
+  const form = document.getElementById('searchForm');
+  const input = document.getElementById('searchInput');
+  const countInput = document.getElementById('countInput');
+  const movieList = document.getElementById('movieList');
+  const loader = document.getElementById('loader');
+
+  const navHome = document.getElementById('nav-home');
+  const navFav = document.getElementById('nav-fav');
+  const navPopular = document.getElementById('nav-popular');
+
+  // Load movies from localStorage on page load
+  const loadMovies = () => {
+    const cachedMovies = JSON.parse(localStorage.getItem('cachedMovies'));
+    if (cachedMovies) {
+      showMovies(cachedMovies);
+    } else {
+      fetchMovies();
+    }
+  };
+
+  // Fetch movies from API
+  const fetchMovies = async () => {
+    const query = input.value.trim();
+    const count = countInput.value.trim() || 5;
+
+    if (!query) return;
+
+    movieList.innerHTML = '';
+    loader.style.display = 'block';
+
+    const url = `https://imdb232.p.rapidapi.com/api/search?count=${count}&type=MOVIE&q=${encodeURIComponent(query)}`;
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-key': 'd0b6260dacmsh68b598649489698p1a50f5jsn676f3d187779',
+        'x-rapidapi-host': 'imdb232.p.rapidapi.com'
+      }
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      console.log(data);  // Log the response to see its structure
+
+      // Check if mainSearch and edges are present in the response
+      if (data && data.data && data.data.mainSearch && data.data.mainSearch.edges) {
+        const movieData = data.data.mainSearch.edges;
+        showMovies(movieData);
+        // Cache the movies for later use
+        localStorage.setItem('cachedMovies', JSON.stringify(movieData));
+      } else {
+        movieList.innerHTML = '<p>No movies found or invalid response format.</p>';
+      }
+    } catch (error) {
+      movieList.innerHTML = `<p>Error fetching movies: ${error.message}</p>`;
+    } finally {
+      loader.style.display = 'none';
+    }
+  };
+
+  // Render movies
+  const showMovies = (movies) => {
+    movieList.innerHTML = '';
+    if (movies.length === 0) {
+      movieList.innerHTML = '<p>No movies found.</p>';
+    }
+
+    movies.forEach(edge => {
+      const entity = edge.node.entity;
+      const img = entity.primaryImage?.url || '';
+      const title = entity.titleText?.text || 'No title';
+      const year = entity.releaseYear?.year || '';
+      const id = entity.id;
+
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+
+      card.innerHTML = `
+        <img src="${img}" alt="${title}" />
+        <h3>${title} (${year})</h3>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button>Add to Fvrt 🤍</button>
+          <button onclick='viewDetails(${JSON.stringify(entity)})'>Read More...</button>
+        </div>
+      `;
+
+      const button = card.querySelector('button');
+      button.addEventListener('click', () => {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const exists = favorites.find(item => item.id === id);
+
+        if (!exists) {
+          favorites.push(entity);
+          localStorage.setItem('favorites', JSON.stringify(favorites));
+          button.textContent = '✓ Added';
+          button.disabled = true;
+        }
+      });
+
+      movieList.appendChild(card);
+    });
+  };
+
+  // View movie details
+  function viewDetails(movie) {
+    sessionStorage.setItem('selectedMovie', JSON.stringify(movie));
+    window.location.href = 'details.html';
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    fetchMovies();
+  });
+
+  loadMovies();  // Load movies from localStorage or fetch if not present
+</script>
+
+</body>
+</html>

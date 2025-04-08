@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Most Popular Actors</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <h1>🎬 Movie Search</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="favorites.html">Favorites</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h2>Most Popular Actors</h2>
+    <div id="popularList" class="grid"></div>
+  </div>
+
+    <footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Movie Search. All rights reserved.</p>
+    <p>Made with ❤️ for movie lovers</p>
+  </div>
+</footer>
+
+  <script>
+    const popularList = document.getElementById('popularList');
+
+    // Function to save actor details to localStorage and navigate to details page
+    function viewDetails(actor) {
+      localStorage.setItem('selectedActor', JSON.stringify(actor));
+      window.location.href = 'details.html';  // Navigate to details page
+    }
+
+    async function fetchPopularActors() {
+      popularList.innerHTML = '<p>Loading...</p>';
+
+      const url = 'https://imdb232.p.rapidapi.com/api/actors/get-most-popular?limit=25';
+      const options = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': 'd0b6260dacmsh68b598649489698p1a50f5jsn676f3d187779',
+          'x-rapidapi-host': 'imdb232.p.rapidapi.com'
+        }
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        const actorData = result.data.topMeterNames.edges;
+        displayPopularActors(actorData);
+      } catch (error) {
+        popularList.innerHTML = `<p>Error fetching popular actors: ${error.message}</p>`;
+      }
+    }
+
+    function displayPopularActors(actors) {
+      popularList.innerHTML = '';
+      if (actors.length === 0) {
+        popularList.innerHTML = '<p>No popular actors found.</p>';
+      } else {
+        actors.forEach(edge => {
+          const actor = edge.node;
+          const img = actor.primaryImage?.url || '';
+          const name = actor.nameText?.text || 'No name';
+          const rank = actor.meterRanking?.currentRank || '';
+          const id = actor.id;
+
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+
+          card.innerHTML = `
+            <img src="${img}" alt="${name}" />
+            <h3>${name} (Rank: ${rank})</h3>
+          `;
+
+          popularList.appendChild(card);
+        });
+      }
+    }
+
+    fetchPopularActors();  // Fetch the popular actors on page load
+  </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Favorites</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <h1>🎬 Movie Search</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="popular.html" id="nav-popular">Most Popular</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h2>Your Favorite Movies</h2>
+    <div id="favoritesList" class="grid"></div>
+  </div>
+  
+    <footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Movie Search. All rights reserved.</p>
+    <p>Made with ❤️ for movie lovers</p>
+  </div>
+</footer>
+
+  <script>
+    const favoritesList = document.getElementById('favoritesList');
+
+    function loadFavorites() {
+      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      if (favorites.length === 0) {
+        favoritesList.innerHTML = '<p>No favorites added yet!</p>';
+      } else {
+        favoritesList.innerHTML = '';
+        favorites.forEach(movie => {
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+
+          const img = movie.primaryImage?.url || '';
+          const title = movie.titleText?.text || 'No title';
+          const year = movie.releaseYear?.year || '';
+
+          card.innerHTML = `
+            <img src="${img}" alt="${title}" />
+            <h3>${title} (${year})</h3>
+            <button onclick='removeFromFavorites("${movie.id}")'>Remove</button>
+          `;
+
+          favoritesList.appendChild(card);
+        });
+      }
+    }
+
+    function removeFromFavorites(movieId) {
+      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      const updatedFavorites = favorites.filter(movie => movie.id !== movieId);
+      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      loadFavorites();  // Reload the favorites list
+    }
+
+    loadFavorites();  // Load favorites on page load
+  </script>
+</body>
+</html>

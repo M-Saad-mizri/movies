@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Details</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <h1>🎬 Movie Search</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div id="movieDetails"></div>
+  </div>
+
+    <footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Movie Search. All rights reserved.</p>
+    <p>Made with ❤️ for movie lovers</p>
+  </div>
+</footer>
+
+  <script>
+    function fetchMovieDetails() {
+      const movie = JSON.parse(sessionStorage.getItem('selectedMovie'));
+
+      const movieDetailsEl = document.getElementById('movieDetails');
+
+      if (!movie) {
+        movieDetailsEl.innerHTML = "<h2>No movie details found.</h2>";
+        return;
+      }
+
+movieDetailsEl.innerHTML = `
+  <div class="movie-detail-card">
+    <h1>${movie.titleText?.text || 'No title'}</h1>
+    <p><strong>Year:</strong> ${movie.releaseYear?.year || 'N/A'}</p>
+    <img src="${movie.primaryImage?.url || ''}" alt="${movie.titleText?.text}" />
+    <p><strong>ID:</strong> ${movie.id}</p>
+    <p><strong>Type:</strong> ${movie.titleType?.text || 'Movie'}</p>
+    <p><strong>Original Title:</strong> ${movie.originalTitleText?.text || 'N/A'}</p>
+  </div>
+`;
+
+    }
+
+    fetchMovieDetails();
+  </script>
+</body>
+</html>
