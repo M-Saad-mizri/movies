@@ -8,7 +8,7 @@
 </head>
 <body>
   <nav>
-    <h1>🎬 Movie Search</h1>
+    <h1><img style="width: 30px;" src="./logo/logo3.png" alt="logo"></h1>
     <ul>
       <li><a href="favorites.html" id="nav-fav">🤍 Favorites</a></li>
       <li><a href="popular.html" id="nav-popular">📈 Most Popular</a></li>
@@ -21,7 +21,7 @@
       <input type="number" id="countInput" placeholder="Number of results: 5"/>
       <button type="submit">Search</button>
     </form>
-    <div id="loader" style="display: none;">Loading...</div>
+    <div id="loader" style="display: none;">⏳ Loading...</div>
     <div id="movieList" class="grid"></div>
   </div>
 
@@ -115,7 +115,7 @@
         <img src="${img}" alt="${title}" />
         <h3>${title} (${year})</h3>
         <div style="display: flex; justify-content: center; gap: 10px;">
-          <button>Add to Fvrt 🤍</button>
+          <button>🤍</button>
           <button onclick='viewDetails(${JSON.stringify(entity)})'>Read More...</button>
         </div>
       `;

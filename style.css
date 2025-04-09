@@ -12,21 +12,17 @@ body {
 
 nav {
   background-color: #8b0000; /* Deep red */
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-nav h1 {
-  font-size: 1.5rem;
-  color: #fff;
-}
 
 nav ul {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
  nav a {
@@ -59,6 +55,7 @@ nav a:hover::after {
 
 .container {
   padding: 1.5rem 2rem;
+  margin-bottom: 50px;
 }
 
 form {
@@ -199,8 +196,9 @@ footer p:first-child {
   }
 
   nav ul {
+    margin-top: 5px;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   form {
@@ -219,10 +217,7 @@ footer p:first-child {
 }
 
 /* Mobile (480px and below) */
-@media (max-width: 480px) {
-  nav h1 {
-    font-size: 1.2rem;
-  }
+@media (max-width: 520px) {
 
   nav {
     flex-direction: row;
