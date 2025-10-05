@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Movie Details</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <nav>
     <h1><img style="width: 30px;" src="./logo/logo3.png" alt="logo"></h1>
@@ -18,17 +20,16 @@
     <div style="margin-bottom: 150px;" id="movieDetails"></div>
   </div>
 
-    <footer>
-  <div class="footer-content">
-    <p>&copy; 2025 Movie Search. All rights reserved.</p>
-    <p>Made with ❤️ for movie lovers</p>
-  </div>
-</footer>
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Movie Search. All rights reserved.</p>
+      <p>Made with ❤️ for movie lovers</p>
+    </div>
+  </footer>
 
   <script>
     function fetchMovieDetails() {
       const movie = JSON.parse(sessionStorage.getItem('selectedMovie'));
-
       const movieDetailsEl = document.getElementById('movieDetails');
 
       if (!movie) {
@@ -36,20 +37,27 @@
         return;
       }
 
-movieDetailsEl.innerHTML = `
-  <div class="movie-detail-card">
-    <h1>${movie.titleText?.text || 'No title'}</h1>
-    <p><strong>Year:</strong> ${movie.releaseYear?.year || 'N/A'}</p>
-    <img src="${movie.primaryImage?.url || ''}" alt="${movie.titleText?.text}" />
-    <p><strong>ID:</strong> ${movie.id}</p>
-    <p><strong>Type:</strong> ${movie.titleType?.text || 'Movie'}</p>
-    <p><strong>Original Title:</strong> ${movie.originalTitleText?.text || 'N/A'}</p>
-  </div>
-`;
+      movieDetailsEl.innerHTML = `
+        <div class="movie-detail-card">
+          <h1>${movie.titleText?.text || 'No title'}</h1>
+          <p><strong>Year:</strong> ${movie.releaseYear?.year || 'N/A'}</p>
+          <img src="${movie.primaryImage?.url || ''}" alt="${movie.titleText?.text}" />
+          <p><strong>ID:</strong> ${movie.id}</p>
+          <p><strong>Type:</strong> ${movie.titleType?.text || 'Movie'}</p>
+          <p><strong>Original Title:</strong> ${movie.originalTitleText?.text || 'N/A'}</p>
+          <button style="width: fit-contant;" onclick="searchMovieOnInternet('${movie.titleText?.text}')">🔍 Search For Free Resources <i style="font-size: 12px;color: black;">Success Rate 90%</i></button>
+        </div>
+      `;
+    }
 
+    function searchMovieOnInternet(title) {
+      if (!title) return;
+      const query = encodeURIComponent(title + " +(mkv|mp4|avi|mov|mpg|wmv|divx|mpeg) -inurl:(jsp|pl|php|html|aspx|htm|cf|shtml) intitle:index.of -inurl:(listen77|mp3raid|mp3toss|mp3drug|index_of|index-of|wallywashis|downloadmana)");
+      window.open(`https://www.google.com/search?q=${query}`, "_blank");
     }
 
     fetchMovieDetails();
   </script>
 </body>
+
 </html>
